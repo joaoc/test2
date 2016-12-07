@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <msp430.h>
+#include "Register/reg_t.hpp"
 
 namespace MSP430{
 
@@ -32,75 +33,48 @@ enum class GPIO_RES{
 	DEFAULT = DISABLE
 };
 
+enum class GPIO_INTERRUPT{
+	LOW_TO_HIGH = 0,
+	HIGH_TO_LOW,
+	NONE
+};
+
 namespace implementation{
 
 class GPIO_P1 {
 public:
-	GPIO_P1()
- 		: Input(				*reinterpret_cast<uint8_t*>(P1IN)	)
- 	    , Output(				*reinterpret_cast<uint8_t*>(P1OUT)	)
- 	    , Direction(			*reinterpret_cast<uint8_t*>(P1DIR)	)
- 	    , Interrupt_Flag(		*reinterpret_cast<uint8_t*>(P1IFG)	)
- 	    , Interrupt_Edge_Select(*reinterpret_cast<uint8_t*>(P1IES)	)
- 	    , Interrupt_Enable(		*reinterpret_cast<uint8_t*>(P1IE)	)
- 	    , Port_Select(			*reinterpret_cast<uint8_t*>(P1SEL)	)
- 	    , Port_Select2(			*reinterpret_cast<uint8_t*>(P1SEL2)	)
- 	    , Resistor_Enable(		*reinterpret_cast<uint8_t*>(P1REN)	)
-		{}
-
-	volatile uint8_t& Input;
- 	volatile uint8_t& Output;
- 	volatile uint8_t& Direction;
- 	volatile uint8_t& Interrupt_Flag;
- 	volatile uint8_t& Interrupt_Edge_Select;
- 	volatile uint8_t& Interrupt_Enable;
- 	volatile uint8_t& Port_Select;
- 	volatile uint8_t& Port_Select2;
- 	volatile uint8_t& Resistor_Enable;
+	using Input                 = reg_t<uint8_t, P1IN_>  ;
+ 	using Output    			= reg_t<uint8_t, P1OUT_> ;
+ 	using Direction				= reg_t<uint8_t, P1DIR_> ;
+ 	using Interrupt_Flag		= reg_t<uint8_t, P1IFG_> ;
+ 	using Interrupt_Edge_Select	= reg_t<uint8_t, P1IES_> ;
+ 	using Interrupt_Enable		= reg_t<uint8_t, P1IE_>  ;
+ 	using Port_Select			= reg_t<uint8_t, P1SEL_> ;
+ 	using Port_Select2			= reg_t<uint8_t, P1SEL2_>;
+ 	using Resistor_Enable		= reg_t<uint8_t, P1REN_> ;
 };
 
 class GPIO_P2 {
 public:
-	GPIO_P2()
- 		: Input(				*reinterpret_cast<uint8_t*>(P2IN)	)
- 	    , Output(				*reinterpret_cast<uint8_t*>(P2OUT)	)
- 	    , Direction(			*reinterpret_cast<uint8_t*>(P2DIR)	)
- 	    , Interrupt_Flag(		*reinterpret_cast<uint8_t*>(P2IFG)	)
- 	    , Interrupt_Edge_Select(*reinterpret_cast<uint8_t*>(P2IES)	)
- 	    , Interrupt_Enable(		*reinterpret_cast<uint8_t*>(P2IE)	)
- 	    , Port_Select(			*reinterpret_cast<uint8_t*>(P2SEL)	)
- 	    , Port_Select2(			*reinterpret_cast<uint8_t*>(P2SEL2)	)
- 	    , Resistor_Enable(		*reinterpret_cast<uint8_t*>(P2REN)	)
-		{}
-
-	volatile uint8_t& Input;
- 	volatile uint8_t& Output;
- 	volatile uint8_t& Direction;
- 	volatile uint8_t& Interrupt_Flag;
- 	volatile uint8_t& Interrupt_Edge_Select;
- 	volatile uint8_t& Interrupt_Enable;
- 	volatile uint8_t& Port_Select;
- 	volatile uint8_t& Port_Select2;
- 	volatile uint8_t& Resistor_Enable;
+	using Input                 = reg_t<uint8_t, P2IN_>  ;
+	using Output    			= reg_t<uint8_t, P2OUT_> ;
+	using Direction				= reg_t<uint8_t, P2DIR_> ;
+	using Interrupt_Flag		= reg_t<uint8_t, P2IFG_> ;
+	using Interrupt_Edge_Select	= reg_t<uint8_t, P2IES_> ;
+	using Interrupt_Enable		= reg_t<uint8_t, P2IE_>  ;
+	using Port_Select			= reg_t<uint8_t, P2SEL_> ;
+	using Port_Select2			= reg_t<uint8_t, P2SEL2_>;
+	using Resistor_Enable		= reg_t<uint8_t, P2REN_> ;
 };
 
 class GPIO_P3 {
 public:
-	GPIO_P3()
- 		: Input(				*reinterpret_cast<uint8_t*>(P3IN)	)
- 	    , Output(				*reinterpret_cast<uint8_t*>(P3OUT)	)
- 	    , Direction(			*reinterpret_cast<uint8_t*>(P3DIR)	)
- 	    , Port_Select(			*reinterpret_cast<uint8_t*>(P3SEL)	)
- 	    , Port_Select2(			*reinterpret_cast<uint8_t*>(P3SEL2)	)
- 	    , Resistor_Enable(		*reinterpret_cast<uint8_t*>(P3REN)	)
-		{}
-
-	volatile uint8_t& Input;
- 	volatile uint8_t& Output;
- 	volatile uint8_t& Direction;
- 	volatile uint8_t& Port_Select;
- 	volatile uint8_t& Port_Select2;
- 	volatile uint8_t& Resistor_Enable;
+	using Input                 = reg_t<uint8_t, P3IN_>  ;
+	using Output    			= reg_t<uint8_t, P3OUT_> ;
+	using Direction				= reg_t<uint8_t, P3DIR_> ;
+	using Port_Select			= reg_t<uint8_t, P3SEL_> ;
+	using Port_Select2			= reg_t<uint8_t, P3SEL2_>;
+	using Resistor_Enable		= reg_t<uint8_t, P3REN_> ;
 };
 
 template<class GPIO_Px, uint8_t PIN>
@@ -114,49 +88,47 @@ public:
 		set_res(res);
 	};
 
-	void set(uint8_t val)
+	static void set(uint8_t val)
 	{
-		if(val)
-			this->Output|=1<<PIN;
-		else
-			this->Output&=!(1<<PIN);
+		GPIO_Px::Output::write(static_cast<uint8_t>(val)<<PIN,1<<PIN);
 	};
 
-	void clear()
+	static void clear()
 	{
 		set(0);
 	};
 
-	void set_dir(GPIO_DIR dir)
+	static void set_dir(GPIO_DIR dir)
 	{
-		if(dir == GPIO_DIR::INPUT)
-			this->Direction&=!(1<<PIN);
-		else //output
-		{
-			set_res(GPIO_RES::DISABLE);
-			this->Direction|=(1<<PIN);
-		}
+		GPIO_Px::Direction::write(static_cast<uint8_t>(dir)<<PIN,1<<PIN);
 	};
 
-	void set_res(GPIO_RES res)
+	static void set_res(GPIO_RES res)
 	{
-		if(res == GPIO_RES::DISABLE)
-		{
-			this->Resistor_Enable&=!(1<<PIN);
-		}
+		if(res==GPIO_RES::DISABLE || GPIO_Px::Direction::read() & 1<<PIN)	//If  pull up/down resistor is disable OR pin direction is out
+			GPIO_Px::Resistor_Enable::clear(1<<PIN);						//Disable resistor
 		else
 		{
-			if(res == GPIO_RES::PULLDOW)
-				this->Output&=!(1<<PIN);
-			else
-				this->Output|=(1<<PIN);
+			GPIO_Px::Resistor_Enable::set(1<<PIN);							//Enable resistor
+			GPIO_Px::Output::write(static_cast<uint8_t>(res)<<PIN, 1<<PIN);	//set mode
 		}
 	};
 
-	bool read()
+	static bool read()
 	{
-		return(this->Input & (1<<PIN));
+		return(GPIO_Px::Input::read() & (1<<PIN));
 	};
+
+	static void set_pin_function(bool sel1, bool sel2)
+	{
+		GPIO_Px::Port_Select::write(sel1<<PIN);
+		GPIO_Px::Port_Select2::write(sel2<<PIN);
+	}
+
+	static void unused_pins(uint8_t mask)
+	{
+		GPIO_Px::Direction::set(mask,mask);
+	}
 };
 
 template<class GPIO_Px, uint8_t PIN>
@@ -165,10 +137,24 @@ public:
 	GPIO_Interrupts(GPIO_DIR dir, GPIO_RES res = GPIO_RES::DEFAULT ):
 		GPIO_Base<GPIO_Px, PIN>(dir,res){};
 
-	void set_interrupt(uint8_t val){};
-	void set_interrupt_edge(){};
-	bool check_interrupt_flag();
-	void clear_interrupt_flag(){};
+	void set_interrupt(GPIO_INTERRUPT val)
+	{
+		if (val== GPIO_INTERRUPT::NONE)
+			GPIO_Px::Interrupt_Enable::clear(1<<PIN);
+		else
+		{
+			GPIO_Px::Interrupt_Enable::set(1<<PIN);
+			GPIO_Px::Interrupt_Edge_Select::write(static_cast<uint8_t>(val)<<PIN,1<<PIN);
+		}
+	};
+	bool check_interrupt_flag()
+	{
+		return GPIO_Px::Interrupt_Flag::read() & 1<<PIN;
+	}
+	void clear_interrupt_flag()
+	{
+		GPIO_Px::Interrupt_Flag::clear(1<<PIN);
+	};
 };
 
 }
